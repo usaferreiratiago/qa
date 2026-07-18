@@ -1,18 +1,17 @@
 from deepeval.metrics import HallucinationMetric
-from deepeval.models import Gemini
+from deepeval.models import GeminiModel  # Use GeminiModel here
 from deepeval.test_case import LLMTestCase
 from config.settings import settings
 
-# Initialize Gemini
-# DeepEval automatically picks up GOOGLE_API_KEY from your environment 
-# if you don't pass it explicitly, but you can pass it via 'google_api_key' argument.
-custom_model = Gemini(
-    model="gemini-1.5-flash",
-    google_api_key=settings.GOOGLE_API_KEY
+# Initialize GeminiModel
+# Pass the API key from your settings
+custom_model = GeminiModel(
+    model="gemini-1.5-flash", 
+    api_key=settings.GOOGLE_API_KEY
 )
 
 def evaluate_hallucination(input_text: str, actual_output: str, retrieval_context: list[str]):
-    # The metric now uses Gemini instead of Ollama
+    # Use the model in your metric
     metric = HallucinationMetric(threshold=0.7, model=custom_model)
     
     test_case = LLMTestCase(
