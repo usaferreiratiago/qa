@@ -1,4 +1,5 @@
 import json
+import time
 from src.evaluation.metrics.hallucination import evaluate_agent
 
 def run_batch_evaluation(dataset_path: str):
@@ -12,12 +13,14 @@ def run_batch_evaluation(dataset_path: str):
         actual_output = entry.get('output', "")
         input_text = entry.get('input', "")
         context = entry.get('context', [])
+        time.sleep(5)
         
         # Evaluate using the function defined in hallucination.py
         metrics = evaluate_agent(
             input_text=input_text, 
             actual_output=actual_output, 
-            retrieval_context=context
+            retrieval_context=context,
+            metrics = evaluate_agent(...)
         )
         
         # Log to terminal
