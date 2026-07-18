@@ -10,18 +10,25 @@ def main():
     # Generate a report
     for res in results:
         metrics = res['metrics']
+        
+        # Extract individual scores
         h_score = metrics['hallucination']['score']
         r_score = metrics['relevance']['score']
+        f_score = metrics['faithfulness']['score']
         
+        print("-" * 30)
         print(f"Query: {res['query']}")
         print(f"  -> Hallucination Score: {h_score:.2f}")
         print(f"  -> Relevance Score: {r_score:.2f}")
+        print(f"  -> Faithfulness Score: {f_score:.2f}")
         
-        # Optional: Print reasons if the score is low (e.g., < 0.7)
+        # Print reasons for failures (threshold < 0.7)
         if h_score < 0.7:
-            print(f"  -> Hallucination Reason: {metrics['hallucination']['reason']}")
+            print(f"  [!] Hallucination Reason: {metrics['hallucination']['reason']}")
         if r_score < 0.7:
-            print(f"  -> Relevance Reason: {metrics['relevance']['reason']}")
+            print(f"  [!] Relevance Reason: {metrics['relevance']['reason']}")
+        if f_score < 0.7:
+            print(f"  [!] Faithfulness Reason: {metrics['faithfulness']['reason']}")
 
 if __name__ == "__main__":
     main()
