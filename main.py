@@ -9,7 +9,19 @@ def main():
     
     # Generate a report
     for res in results:
-        print(f"Query: {res['query']} | Score: {res['metrics']['score']}")
+        metrics = res['metrics']
+        h_score = metrics['hallucination']['score']
+        r_score = metrics['relevance']['score']
+        
+        print(f"Query: {res['query']}")
+        print(f"  -> Hallucination Score: {h_score:.2f}")
+        print(f"  -> Relevance Score: {r_score:.2f}")
+        
+        # Optional: Print reasons if the score is low (e.g., < 0.7)
+        if h_score < 0.7:
+            print(f"  -> Hallucination Reason: {metrics['hallucination']['reason']}")
+        if r_score < 0.7:
+            print(f"  -> Relevance Reason: {metrics['relevance']['reason']}")
 
 if __name__ == "__main__":
     main()
