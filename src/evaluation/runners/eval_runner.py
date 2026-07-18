@@ -9,18 +9,20 @@ def run_batch_evaluation(dataset_path: str):
     
     results = []
     for entry in data:
+
+        time.sleep(5)
         # Extract inputs
         actual_output = entry.get('output', "")
         input_text = entry.get('input', "")
         context = entry.get('context', [])
-        time.sleep(5)
+        
         
         # Evaluate using the function defined in hallucination.py
         metrics = evaluate_agent(
             input_text=input_text, 
             actual_output=actual_output, 
-            retrieval_context=context,
-            metrics = evaluate_agent(...)
+            retrieval_context=context
+            
         )
         
         # Log to terminal
