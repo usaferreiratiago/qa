@@ -11,6 +11,9 @@ custom_model = GeminiModel(
 
 def evaluate_hallucination(input_text: str, actual_output: str, retrieval_context: list[str]):
     # Use the pre-initialized custom_model
+    print(f"DEBUG - Query: {input_text}")
+    print(f"DEBUG - Agent Answer: {actual_output}")
+    print(f"DEBUG - Context Snippet: {retrieval_context[:100]}") # Show start of context
     metric = HallucinationMetric(threshold=0.7, model=custom_model)
     
     test_case = LLMTestCase(
