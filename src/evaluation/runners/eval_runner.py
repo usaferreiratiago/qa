@@ -1,32 +1,38 @@
-import json
-from src.evaluation.metrics.hallucination import evaluate_agent
+from deepeval.metrics import HallucinationMetric, AnswerRelevancyMetric
+from deepeval.test_case import LLMTestCase
+from deepeval.models import GeminiModel
+from config.settings import settings
 
-def run_batch_evaluation(dataset_path: str):
-    with open(dataset_path, 'r') as f:
-        data = json.load(f)
+# Initialize the model at the module level
+custom_model = GeminiModel(
+    model=settings.MODEL,
+    api_key=settings.GOOGLE_API_KEY
+)
+
+def evaluate_agent(input_text: str, actual_output: str, retrieval_context: list[str]):
+    # Define the test case
+    test_case = LLMTestCase(
+        input=input_text,
+        actual_output=actual_output,
+        context=retrieval_context
+    )
     
-    results = []
-    for entry in data:
-        # Extract inputs
-        actual_output = entry.get('output', "")
-        input_text = entry.get('input', "")
-        context = entry.get('context', [])
-        
-        # Evaluate using both metrics
-        metrics = evaluate_agent(
-            input_text=input_text, 
-            actual_output=actual_output, 
-            retrieval_context=context
-        )
-        
-        # Log the outcome
-        print(f"Query: {input_text}")
-        print(f"  -> Hallucination Score: {metrics['hallucination']['score']}")
-        print(f"  -> Relevance Score: {metrics['relevance']['score']}")
-        
-        results.append({
-            "query": input_text, 
-            "metrics": metrics
-        })
+    # Define metrics using the correct class names
+    h_metric = HallucinationMetric(threshold=0.7, model=custom_model)
+    r_metric = AnswerRelevancyMetric(threshold=0.7, model=custom_model)
     
-    return results
+    # Measure
+    h_metric.measure(test_case)
+    r_metric.measure(test_case)
+    
+    # Return results
+    return {
+        "hallucination": {
+            "score": h_metric.score,
+            "reason": h_metric.reason
+        },
+        "relevance": {
+            "score": r_metric.score,
+            "reason": r_metric.reason
+        }
+    }
