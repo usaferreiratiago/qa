@@ -1,5 +1,5 @@
 import json
-from src.evaluation.metrics.hallucination import evaluate_hallucination
+from src.evaluation.metrics.hallucination import evaluate_agent
 
 def run_batch_evaluation(dataset_path: str):
     with open(dataset_path, 'r') as f:
@@ -7,18 +7,26 @@ def run_batch_evaluation(dataset_path: str):
     
     results = []
     for entry in data:
-        # Use the correct key: 'output'
-        # I've added a fallback to an empty string to prevent crashes if a key is missing
+        # Extract inputs
         actual_output = entry.get('output', "")
         input_text = entry.get('input', "")
         context = entry.get('context', [])
         
-        # Evaluate using the local judge
-        score = evaluate_hallucination(
+        # Evaluate using both metrics
+        metrics = evaluate_agent(
             input_text=input_text, 
             actual_output=actual_output, 
             retrieval_context=context
         )
-        results.append({"query": input_text, "metrics": score})
+        
+        # Log the outcome
+        print(f"Query: {input_text}")
+        print(f"  -> Hallucination Score: {metrics['hallucination']['score']}")
+        print(f"  -> Relevance Score: {metrics['relevance']['score']}")
+        
+        results.append({
+            "query": input_text, 
+            "metrics": metrics
+        })
     
     return results
