@@ -1,4 +1,4 @@
-from deepeval.metrics import HallucinationMetric, AnswerRelevanceMetric
+from deepeval.metrics import HallucinationMetric, AnswerRelevancyMetric
 from deepeval.test_case import LLMTestCase
 from deepeval.models import GeminiModel
 from config.settings import settings
@@ -17,15 +17,15 @@ def evaluate_agent(input_text: str, actual_output: str, retrieval_context: list[
         context=retrieval_context
     )
     
-    # Define metrics
+    # Define metrics using the correct library class names
     h_metric = HallucinationMetric(threshold=0.7, model=custom_model)
-    r_metric = AnswerRelevanceMetric(threshold=0.7, model=custom_model)
+    r_metric = AnswerRelevancyMetric(threshold=0.7, model=custom_model)
     
     # Measure
     h_metric.measure(test_case)
     r_metric.measure(test_case)
     
-    # Return results for both
+    # Return results
     return {
         "hallucination": {
             "score": h_metric.score,
