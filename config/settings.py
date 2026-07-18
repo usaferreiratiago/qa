@@ -1,12 +1,9 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
-    AZURE_OPENAI_API_KEY: str
-    AZURE_OPENAI_ENDPOINT: str
-    AZURE_OPENAI_API_VERSION: str = "2024-02-15-preview"
-    DEPLOYMENT_NAME: str
-    GOOGLE_API_KEY: str  # Add this line
+    GOOGLE_API_KEY: str
     
-    model_config = SettingsConfigDict(env_file=".env")
+    # This configuration ignores any other keys found in your .env
+    model_config = SettingsConfigDict(env_file=".env", extra='ignore')
 
 settings = Settings()
