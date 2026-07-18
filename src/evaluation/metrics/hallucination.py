@@ -3,9 +3,9 @@ from deepeval.models import GeminiModel
 from deepeval.test_case import LLMTestCase
 from config.settings import settings
 
-# Initialize Gemini model using the clean settings
+# Initialize GeminiModel using the dynamic model name from settings
 custom_model = GeminiModel(
-    model="gemini-1.5-flash", 
+    model=settings.MODEL,  # Now pulling "gemini-1.5-flash" from .env
     api_key=settings.GOOGLE_API_KEY
 )
 
