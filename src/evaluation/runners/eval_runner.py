@@ -7,11 +7,12 @@ def run_batch_evaluation(dataset_path: str):
     
     results = []
     for entry in data:
-        # Here you would call your actual Agent logic
-        # result = agent.run(entry['input']) 
-        
-        # Mocking the evaluation
-        score = evaluate_hallucination(entry['input'], entry['output'], entry['context'])
+        # Evaluate using the local judge
+        score = evaluate_hallucination(
+            input_text=entry['input'], 
+            actual_output=entry['expected_output'], # Use expected as actual for testing your setup
+            retrieval_context=entry['context']
+        )
         results.append({"query": entry['input'], "metrics": score})
     
     return results
