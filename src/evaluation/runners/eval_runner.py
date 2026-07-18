@@ -7,12 +7,18 @@ def run_batch_evaluation(dataset_path: str):
     
     results = []
     for entry in data:
+        # Use the correct key: 'output'
+        # I've added a fallback to an empty string to prevent crashes if a key is missing
+        actual_output = entry.get('output', "")
+        input_text = entry.get('input', "")
+        context = entry.get('context', [])
+        
         # Evaluate using the local judge
         score = evaluate_hallucination(
-            input_text=entry['input'], 
-            actual_output=entry['expected_output'], # Use expected as actual for testing your setup
-            retrieval_context=entry['context']
+            input_text=input_text, 
+            actual_output=actual_output, 
+            retrieval_context=context
         )
-        results.append({"query": entry['input'], "metrics": score})
+        results.append({"query": input_text, "metrics": score})
     
     return results
