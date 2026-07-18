@@ -1,0 +1,9 @@
+# requirements.txt
+langchain
+langchain-openai
+deepeval
+pydantic
+pydantic-settings
+python-dotenv
+pandas
+azure-identity
