@@ -3,21 +3,27 @@ from deepeval.test_case import LLMTestCase
 from deepeval.models import GeminiModel
 from config.settings import settings
 
-custom_model = GeminiModel(model=settings.MODEL, api_key=settings.GOOGLE_API_KEY)
+# Only initialize the model if we aren't in debug mode
+custom_model = None
+if not settings.DEBUG_MODE:
+    custom_model = GeminiModel(model=settings.MODEL, api_key=settings.GOOGLE_API_KEY)
 
 def evaluate_agent(input_text: str, actual_output: str, retrieval_context: list[str]):
-    test_case = LLMTestCase(
-        input=input_text,
-        actual_output=actual_output,
-        context=retrieval_context
-    )
+    # MOCK MODE: Returns fake data instantly
+    if settings.DEBUG_MODE:
+        return {
+            "hallucination": {"score": 0.85, "reason": "Mock score (debug mode active)"},
+            "relevance": {"score": 0.90, "reason": "Mock score (debug mode active)"},
+            "faithfulness": {"score": 0.95, "reason": "Mock score (debug mode active)"}
+        }
+
+    # REAL MODE: Only runs if DEBUG_MODE is False
+    test_case = LLMTestCase(input=input_text, actual_output=actual_output, context=retrieval_context)
     
-    # Initialize metrics
     h_metric = HallucinationMetric(threshold=0.7, model=custom_model)
     r_metric = AnswerRelevancyMetric(threshold=0.7, model=custom_model)
     f_metric = FaithfulnessMetric(threshold=0.7, model=custom_model)
     
-    # Measure
     h_metric.measure(test_case)
     r_metric.measure(test_case)
     f_metric.measure(test_case)
