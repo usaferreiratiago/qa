@@ -1,5 +1,5 @@
-from deepeval.metrics import HallucinationMetric
-from deepeval.test_case import LLMTestCase
+from deepeval.metrics.hallucination import HallucinationMetric
+from deepeval.models import LLMTestCase
 
 def evaluate_hallucination(input_text: str, actual_output: str, retrieval_context: list[str]):
     # Threshold 0.7: If score < 0.7, it's considered a hallucination
